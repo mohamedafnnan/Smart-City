@@ -1,0 +1,19 @@
+{
+  "name": "smart-city-3d",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Interactive 3D Smart City — a Three.js production-quality visualization with real-time traffic, IoT dashboard, day/night cycle, and cinematic controls.",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host"
+  },
+  "dependencies": {
+    "three": "^0.160.0",
+    "gsap": "^3.12.5"
+  },
+  "devDependencies": {
+    "vite": "^5.0.11"
+  }
+}

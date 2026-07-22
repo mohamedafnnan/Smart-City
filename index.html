@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0e17" />
+    <meta name="description" content="Interactive 3D Smart City — a Three.js production-quality visualization." />
+    <title>NEXUS · Smart City 3D</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2300e5ff'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-weight='700' font-size='18' fill='%230a0e17'%3EN%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/ui/styles/main.css" />
+  </head>
+  <body>
+    <!-- ================= LOADING SCREEN ================= -->
+    <div id="loading-screen" class="loading-screen">
+      <div class="loader-inner">
+        <div class="loader-logo">
+          <svg viewBox="0 0 64 64" width="72" height="72">
+            <defs>
+              <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#00e5ff"/>
+                <stop offset="1" stop-color="#7c4dff"/>
+              </linearGradient>
+            </defs>
+            <rect x="4" y="4" width="56" height="56" rx="10" fill="none" stroke="url(#lg)" stroke-width="2"/>
+            <path d="M14 44 L14 20 L32 36 L32 20 L50 20 L50 44" fill="none" stroke="url(#lg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h1 class="loader-title">NEXUS</h1>
+        <p class="loader-subtitle">Smart City · Three.js Engine</p>
+        <div class="loader-bar"><div id="loader-progress" class="loader-bar-fill"></div></div>
+        <p id="loader-status" class="loader-status">Initializing renderer…</p>
+      </div>
+    </div>
+
+    <!-- ================= APP ROOT ================= -->
+    <div id="app">
+      <canvas id="scene-canvas"></canvas>
+
+      <!-- Top Bar -->
+      <header class="top-bar glass">
+        <div class="brand">
+          <div class="brand-mark">
+            <svg viewBox="0 0 32 32" width="26" height="26">
+              <rect x="3" y="3" width="26" height="26" rx="6" fill="#00e5ff"/>
+              <text x="16" y="21" text-anchor="middle" font-family="Inter" font-weight="700" font-size="14" fill="#0a0e17">N</text>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">NEXUS</span>
+            <span class="brand-tag">Smart City · v1.0</span>
+          </div>
+        </div>
+        <div class="top-search">
+          <input id="search-input" type="text" placeholder="Search buildings, zones, sensors…" />
+          <div id="search-results" class="search-results"></div>
+        </div>
+        <div class="top-actions">
+          <button class="btn-icon" data-action="focus-city" title="Focus city">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg>
+          </button>
+          <button class="btn-icon" data-action="cinematic" title="Cinematic fly-through">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
+          <button class="btn-icon" data-action="daynight" title="Toggle day/night">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <button class="btn-icon" data-action="weather" title="Toggle weather">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>
+          </button>
+          <button class="btn-icon" data-action="settings" title="Settings">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Left Sidebar: Layer Toggles -->
+      <aside class="sidebar sidebar-left glass">
+        <h3 class="sidebar-title">City Layers</h3>
+        <ul class="layer-list" id="layer-list"></ul>
+        <h3 class="sidebar-title">Camera</h3>
+        <div class="camera-presets" id="camera-presets"></div>
+        <h3 class="sidebar-title">Shortcuts</h3>
+        <div class="shortcuts">
+          <div><kbd>D</kbd> Day/Night</div>
+          <div><kbd>T</kbd> Traffic Heatmap</div>
+          <div><kbd>C</kbd> Cinematic</div>
+          <div><kbd>W</kbd> Weather</div>
+          <div><kbd>R</kbd> Reset Camera</div>
+        </div>
+      </aside>
+
+      <!-- Right Sidebar: Dashboard -->
+      <aside class="sidebar sidebar-right glass">
+        <div class="dashboard-header">
+          <h3 class="sidebar-title">Live Dashboard</h3>
+          <span class="pulse-dot"></span>
+        </div>
+        <div class="dashboard-grid" id="dashboard-grid"></div>
+        <h3 class="sidebar-title">Emergency Feed</h3>
+        <ul class="alert-feed" id="alert-feed"></ul>
+      </aside>
+
+      <!-- Info Card (building selection) -->
+      <div id="info-card" class="info-card glass hidden">
+        <button class="info-close" data-action="close-info">×</button>
+        <div class="info-icon" id="info-icon"></div>
+        <h2 id="info-title">—</h2>
+        <p id="info-subtitle" class="info-subtitle">—</p>
+        <div class="info-stats" id="info-stats"></div>
+        <p id="info-description" class="info-description"></p>
+      </div>
+
+      <!-- Bottom Toolbar -->
+      <footer class="bottom-bar glass">
+        <div class="bottom-left">
+          <span class="stat"><span class="stat-label">FPS</span><span id="fps-counter" class="stat-value">60</span></span>
+          <span class="stat"><span class="stat-label">DRAW</span><span id="draw-calls" class="stat-value">0</span></span>
+          <span class="stat"><span class="stat-label">TRI</span><span id="tri-count" class="stat-value">0</span></span>
+          <span class="stat"><span class="stat-label">TIME</span><span id="sim-time" class="stat-value">12:00</span></span>
+        </div>
+        <div class="bottom-center">
+          <div class="time-slider-wrap">
+            <span>🌙</span>
+            <input id="time-slider" type="range" min="0" max="24" step="0.1" value="12" />
+            <span>☀️</span>
+          </div>
+        </div>
+        <div class="bottom-right">
+          <span class="hint">LMB rotate · RMB pan · Wheel zoom · Click objects</span>
+        </div>
+      </footer>
+
+      <!-- Settings Modal -->
+      <div id="settings-modal" class="modal hidden">
+        <div class="modal-content glass">
+          <div class="modal-header">
+            <h2>Settings</h2>
+            <button class="btn-icon" data-action="close-settings">×</button>
+          </div>
+          <div class="modal-body" id="settings-body"></div>
+        </div>
+      </div>
+
+      <!-- Mini Map -->
+      <div id="minimap" class="minimap glass">
+        <canvas id="minimap-canvas" width="180" height="180"></canvas>
+        <div class="minimap-label">MINIMAP</div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
