@@ -147,9 +147,3 @@ Every GPU resource (geometry, material, texture, RT) is registered in `DisposalR
 | Damped OrbitControls + rAF-throttled resize | Smooth on low-end |
 
 Target: **60 FPS** on a 2019+ integrated GPU at 1080p.
-
----
-
-## 🧾 License
-
-MIT © 2026 NEXUS Smart City Contributors.
